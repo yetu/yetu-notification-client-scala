@@ -5,8 +5,6 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 
 resolvers += Classpaths.sbtPluginReleases
 
-credentials += Credentials(baseDirectory( _ / "nexusCredentials").value)
-
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "0.99.7.1")
 addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
 
