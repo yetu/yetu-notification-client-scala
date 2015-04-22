@@ -28,4 +28,5 @@ dist
 /RUNNING_PID
 /.settings
 application.conf
+application-*.conf
 
