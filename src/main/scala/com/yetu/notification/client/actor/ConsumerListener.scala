@@ -3,7 +3,7 @@ package com.yetu.notification.client.actor
 import akka.actor.{Actor, ActorLogging, Props}
 import com.github.sstone.amqp.Amqp._
 
-class ConsumerListener(action: (String) => ()) extends Actor with ActorLogging {
+class ConsumerListener(action: (String) => Unit) extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case Delivery(consumerTag, envelope, properties, body) => {
@@ -16,5 +16,5 @@ class ConsumerListener(action: (String) => ()) extends Actor with ActorLogging {
 }
 
 object ConsumerListener {
-  def props(action: (String) => ()): Props = Props(new ConsumerListener(action))
+  def props(action: (String) => Unit): Props = Props(new ConsumerListener(action))
 }

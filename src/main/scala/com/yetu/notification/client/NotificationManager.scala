@@ -2,6 +2,7 @@ package com.yetu.notification.client
 
 import akka.actor.ActorSystem
 import akka.pattern.ask
+import akka.util.Timeout
 import com.github.sstone.amqp.Amqp._
 import com.github.sstone.amqp.{Amqp, ChannelOwner, ConnectionOwner, Consumer}
 import com.yetu.notification.client.actor.{ConsumerListener, MqPublisherHandler}
@@ -12,6 +13,8 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 
 class NotificationManager(implicit system: ActorSystem) {
+
+  implicit val timeout = Timeout(3 seconds) // timeout for ask pattern
 
   // TODO make exchange option configurable
   lazy val exchange = ExchangeParameters(
@@ -34,7 +37,7 @@ class NotificationManager(implicit system: ActorSystem) {
   }
 
   // *.com-yetu-oauth2provider.logout
-  def subscribe(topic: String, action: (String) => ()): Unit = {
+  def subscribe(topic: String, action: (String) => Unit): Unit = {
     initConsumerHandler(topic, action)
   }
 
@@ -50,7 +53,7 @@ class NotificationManager(implicit system: ActorSystem) {
     system.actorOf(MqPublisherHandler.props(producer, exchange))
   }
 
-  private def initConsumerHandler(topic: String, action: (String) => ()) = {
+  private def initConsumerHandler(topic: String, action: (String) => Unit) = {
     //Create ConsumerListener, which consumes the messages
     val consumerListener = system.actorOf(ConsumerListener.props(action))
 
