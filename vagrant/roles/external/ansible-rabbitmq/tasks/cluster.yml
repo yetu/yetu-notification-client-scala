@@ -1,0 +1,33 @@
+---
+
+# We assume here that the hosts.ini file has a section [rabbitmq] to get information about other rabbitmq servers to cluster with.
+
+- name: "Ensure every rabbit server has entries about other rabbit servers in /etc/hosts (this task must be run on all servers in the rabbitmq group simultaneously to resolve facts)"
+  lineinfile:
+    dest: "/etc/hosts"
+    regexp: ".*{{ item }}.*"
+    line: "{{ hostvars[item]['ansible_eth0']['ipv4']['address'] }}{{'\t'}}{{ item }}{{'\t'}}{{ item.split('.')[0] }}"
+    state: present
+  with_items: rabbitmq_hosts
+  when: item != ansible_fqdn
+  tags: ["rabbitmq-hostnames"]
+
+- name: "Check if cluster exists and the first node in hosts.ini exists in the status output"
+  shell: "rabbitmqctl cluster_status | grep {{ rabbitmq_hosts[0].split('.')[0] }}"
+  register: cluster_result
+  changed_when: False
+  ignore_errors: True
+  when: rabbitmq_hosts[0] != ansible_fqdn
+
+- name: "stop rabbitmq app"
+  shell: "rabbitmqctl stop_app"
+  when: cluster_result is defined and cluster_result.rc == 1
+
+# for this to work, an entry including the short hostname must exist in /etc/hosts
+- name: "add this node to cluster"
+  shell: "rabbitmqctl join_cluster rabbit@{{ rabbitmq_hosts[0].split('.')[0] }}"
+  when: cluster_result is defined and cluster_result.rc == 1
+
+- name: "start rabbitmq app"
+  shell: "rabbitmqctl start_app"
+  when: cluster_result is defined and cluster_result.rc == 1

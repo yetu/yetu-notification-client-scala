@@ -1,0 +1,16 @@
+---
+rabbitmq_vhost_definitions             :
+                                            - name: testVhost
+rabbitmq_users_definitions             :
+                                            - vhost:    testVhost
+                                              user:     test
+                                              password: test
+                                              force:    no # if you change the password, put force = yes
+                                              tags:                # Optionnal, user tags
+                                                  - administrator
+
+rabbitmq_federation                    : false
+rabbitmq_ssl                           : false
+rabbitmq_clustering                    : false
+
+rabbitmq_plugins                       : ["rabbitmq_management","rabbitmq_tracing"]

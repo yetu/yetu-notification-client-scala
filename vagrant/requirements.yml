@@ -1,0 +1,13 @@
+# Requirements file is used to keep track of ansible role origins and versions
+# source code of roles is thus checked into this repo
+#
+# REQUIRES ANSIBLE version 1.8+
+#
+# Usage to install or update existing roles: ( --force overrides existing folders)
+#
+# ansible-galaxy install -r requirements.yml --force
+
+- src: git+https://github.com/yetu/ansible-playbook-rabbitmq.git
+  version: "1.5.7"
+  name: ansible-rabbitmq
+  path : roles/external
