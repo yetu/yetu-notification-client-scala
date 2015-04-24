@@ -1,5 +1,7 @@
 ---
 
+# this file can be used if you provision the vagrant box from your local computer
+
 - hosts: all
   sudo: True
   roles:

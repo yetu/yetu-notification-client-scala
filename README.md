@@ -1,14 +1,12 @@
 # yetu-notification-client-scala
 Scala client for yetu notifications
 
-## Setup vagrant box with rabbitmq
+## Set up a vagrant box with rabbitmq
 
 You need to have installed locally:
 
-* [pip](https://bootstrap.pypa.io/get-pip.py) (only if you don't have ansible)
-* ansible (install via `sudo pip install ansible` or see [this link](https://github.com/ansible/ansible))
-* [virtualbox](https://www.virtualbox.org/wiki/Downloads)
 * [vagrant](https://www.vagrantup.com/)
+* [virtualbox](https://www.virtualbox.org/wiki/Downloads)
 
 Then just execute the following:
 
@@ -23,7 +21,7 @@ cd vagrant && vagrant up
  
 If you have some local process running on these ports please change the host ports in the `vagrant/Vagrantfile`.
 
-Go grab a cup of tea or lunch as this might take up to 20 minutes depending on internet speeds.
+Go grab a cup of tea or lunch as this might take 10-20 minutes depending on internet speeds.
 
 
 ### Debug Rabbitmq
