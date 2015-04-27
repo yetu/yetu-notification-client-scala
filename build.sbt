@@ -14,6 +14,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json" % "2.3.8",
   "com.typesafe.play" %% "play-ws" % "2.3.8",
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+  "org.scalamock" %% "scalamock-scalatest-support" % "3.2" % "test",
   "com.github.sstone" %% "amqp-client" % "1.4",
   "com.typesafe.akka" %% "akka-actor" % "2.3.9",
   "com.typesafe.akka" %% "akka-testkit" % "2.3.9"

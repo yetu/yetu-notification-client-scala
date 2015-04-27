@@ -12,6 +12,7 @@ object Config {
   val RABBITMQ_USERNAME = configObject.getString("rabbitmq.username")
   val RABBITMQ_USE_SSL = configObject.getBoolean("rabbitmq.useSsl")
   val RABBITMQ_HEARTBEAT = configObject.getInt("rabbitmq.heartbeat")
+  val INBOX_PUBLISH_URL = configObject.getString("yetu.inboxPublishUrl")
 
 
   def rabbitMQConnectionSettings(): ConnectionFactory = {

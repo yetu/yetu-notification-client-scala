@@ -22,7 +22,7 @@ class NotificationManager(implicit system: ActorSystem) {
     exchangeType = "topic",
     passive = false,
     durable = true,
-    autodelete = false
+    autodelete = true
   )
 
   //Create the connection to MQ
@@ -37,7 +37,7 @@ class NotificationManager(implicit system: ActorSystem) {
   }
 
   // *.com-yetu-oauth2provider.logout
-  def subscribe(topic: String, action: (String) => Unit): Unit = {
+  def subscribe(topic: String, action: (String) => String) = {
     initConsumerHandler(topic, action)
   }
 
@@ -46,16 +46,16 @@ class NotificationManager(implicit system: ActorSystem) {
    */
   private def initPublisher() = {
 
-//    //Create channel for producer
-//    val producer = ConnectionOwner.createChildActor(connection, ChannelOwner.props())
-//    //Make sure connection is established between client and the MQ
-//    Amqp.waitForConnection(system, producer).await()
-//    //Add publish handler to existing channel
+    //    //Create channel for producer
+    //    val producer = ConnectionOwner.createChildActor(connection, ChannelOwner.props())
+    //    //Make sure connection is established between client and the MQ
+    //    Amqp.waitForConnection(system, producer).await()
+    //    //Add publish handler to existing channel
 
     system.actorOf(InboxPublisherHandler.props)
   }
 
-  private def initConsumerHandler(topic: String, action: (String) => Unit) = {
+  private def initConsumerHandler(topic: String, action: (String) => String) = {
     //Create ConsumerListener, which consumes the messages
     val consumerListener = system.actorOf(ConsumerListener.props(action))
 
@@ -73,21 +73,18 @@ class NotificationManager(implicit system: ActorSystem) {
     val queue_name = "" // TODO make configurable
     //Add queue params to the consumer
     val queueParams = QueueParameters(
-      queue_name,
-      passive = false,
-      durable = true,
-      exclusive = false,
-      autodelete = true
-    )
+        queue_name,
+        passive = false,
+        durable = false,
+        exclusive = true,
+        autodelete = false
+      )
 
     consumer ! DeclareQueue(queueParams)
-    consumer ! QueueBind(
+    consumer ? QueueBind(
       queue = queue_name,
       exchange = Config.RABBITMQ_EXCHANGE,
       routing_key = topic
     )
-
-    consumer ! AddQueue(QueueParameters(name = queue_name, passive = false, durable = true))
-    consumerListener
   }
 }

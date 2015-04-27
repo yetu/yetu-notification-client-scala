@@ -1,12 +1,15 @@
 package com.yetu.notification.client
 
-import org.scalatest.concurrent.ScalaFutures
+import org.scalamock.scalatest.MockFactory
+import org.scalatest.concurrent.{AsyncAssertions, Eventually, ScalaFutures}
+import org.scalatest.time.SpanSugar._
 import org.scalatest.time.{Millis, Seconds, Span}
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class NotificationManagerTest extends BaseSpec with ScalaFutures {
+class NotificationManagerTest extends BaseSpec with ScalaFutures with Eventually with MockFactory {
 
   implicit val defaultPatience =
-    PatienceConfig(timeout =  Span(50, Seconds), interval = Span(50, Millis))
+    PatienceConfig(timeout = Span(50, Seconds), interval = Span(10, Millis))
 
   "Notification manager" must {
     "send message to message queue" in {
@@ -16,28 +19,21 @@ class NotificationManagerTest extends BaseSpec with ScalaFutures {
       }
     }
 
-
-
-//    {
-//      "scope": "bar",
-//      "userUUID": "some-user-strange-uuid",
-//      "clientId": "com.yetu.netatmo.thermostat",
-//      "iat": 1423573831,
-//      "exp": 1734613831,
-//      "aud": "events",
-//      "iss": "https://auth.yetudev.com",
-//      "sub": "subject.with.dots"
-//    }
-
-    "send and receive message at default mq" ignore {
+    "send and receive message at default mq" in {
       val x = new NotificationManager()
-      x.subscribe("some-user-strange-uuid.*.logout",(s:String) => {
-        s mustNot be(null)
-      })
-      whenReady(x.send(TestVariables.correctMessage)) { res =>
+      val m = mockFunction[String, String]
+      x.subscribe("some-user-strange-uuid.*.logout", m) map {
+        case e =>
+          val w = new AsyncAssertions.Waiter
+          x.send(TestVariables.correctMessage)
+          m.expects(*) atLeastOnce() onCall ((s:String) => {
+            println("On Call called")
+            w.dismiss()
+            s
+          })
+          w.await(timeout(10 seconds))
       }
 
     }
-
   }
 }
