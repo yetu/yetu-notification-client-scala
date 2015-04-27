@@ -2,11 +2,11 @@ import bintray.Keys._
 
 name := """yetu-notification-client-scala"""
 
+organization := "com.yetu"
+
 resolvers += "Sonatype snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
-
-version := "1.1"
 
 scalaVersion := "2.11.6"
 
