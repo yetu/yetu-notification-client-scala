@@ -12,7 +12,6 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 
 name := """yetu-notification-client-scala"""
 
-version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
