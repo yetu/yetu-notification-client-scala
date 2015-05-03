@@ -1,11 +1,11 @@
 package com.yetu.notification.client.model
 
-import com.yetu.notification.client.base.BaseSpec
+import com.yetu.notification.client.base.{BasePlaySpec, BaseActorSpec}
 import com.yetu.oauth2resource.model.ValidationResponse
 import play.api.libs.json.{JsString, JsObject, Json, Format}
 import com.yetu.notification.client.util.TestVariables._
 
-class RabbitMessageTest extends BaseSpec {
+class RabbitMessageTest extends BasePlaySpec {
 
   "RabbitMessage" must {
     "have json format value on companion object" in {

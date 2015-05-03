@@ -10,12 +10,15 @@ import play.api.Play.current
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
+/**
+ * Sends request to inbox for the systems that doesn't require connection to MQ.
+ * Might be deprecated in time.
+ */
 class InboxPublisherHandler extends Actor with ActorLogging {
 
   def receive: Receive = {
     case msg: ClientMessage =>
       val selfSender = sender()
-      // WS has it's own sender
       WS.url(Config.INBOX_PUBLISH_URL).post(Json.toJson(msg)).map {
         r: WSResponse => selfSender ! r
       }
