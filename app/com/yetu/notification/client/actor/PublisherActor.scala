@@ -13,10 +13,9 @@ import scala.Error
 /**
  * Use this actor in case if you want to communicate with MQ directly
  */
-class PublisherHandler(producer:ActorRef, exchangeParameters:ExchangeParameters) extends Actor with ActorLogging {
+class PublisherActor(producer: ActorRef, exchangeParameters: ExchangeParameters) extends Actor with ActorLogging {
   //Do not remove the context from the class
   //required for the akka
-  import context.dispatcher
 
   override def preStart() = {
     producer ! ConfirmSelect
@@ -26,21 +25,22 @@ class PublisherHandler(producer:ActorRef, exchangeParameters:ExchangeParameters)
   }
 
   def receive = {
-    case message: RabbitMessage =>{
-      implicit val timeout = Timeout(1, TimeUnit.SECONDS)
+    case message: RabbitMessage =>
+      implicit val timeout = Timeout(5, TimeUnit.SECONDS)
 
       producer ! Publish(Config.RABBITMQ_EXCHANGE_NAME, message.key, message.payload.toString.getBytes)
       producer ! WaitForConfirms(None)
-    }
-    case message:HandleAck        => log.debug(s"HandleAck : $message")
-    case message:Ok               => log.debug(s"Ok : $message")
-    case message:Error            => log.error(s"Error : $message")
-    case message:ReturnedMessage  => log.error(s"ReturnedMessage : $message")
-    case message                  => log.warning(s"Unexpected message $message")
+    case message: HandleAck => log.debug(s"HandleAck : $message")
+    case message: Ok => log.debug(s"Ok : $message")
+    case message: Error => log.error(s"Error : $message")
+    case message: ReturnedMessage =>
+      log.error(s"ReturnedMessage : $message")
+      sender ! message
+    case message => log.warning(s"Unexpected message $message")
   }
 
 }
 
-object PublisherHandler{
-  def props(producer: ActorRef, exchangeParameters:ExchangeParameters): Props = Props(new PublisherHandler(producer,exchangeParameters))
+object PublisherActor {
+  def props(producer: ActorRef, exchangeParameters: ExchangeParameters): Props = Props(new PublisherActor(producer, exchangeParameters))
 }
