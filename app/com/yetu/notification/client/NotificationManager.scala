@@ -5,12 +5,11 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.github.sstone.amqp.Amqp._
 import com.github.sstone.amqp.{Amqp, ChannelOwner, ConnectionOwner, Consumer}
-import com.yetu.notification.client.actor.{ConsumerActor, PublisherHandler}
+import com.yetu.notification.client.actor.{PublisherActor, ConsumerActor}
 import play.api.libs.concurrent.Akka
 import play.api.Logger
 import play.api.Play.current
 
-import scala.concurrent.Future
 import scala.concurrent.duration._
 
 object NotificationManager {
@@ -30,7 +29,7 @@ object NotificationManager {
     val producer = ConnectionOwner.createChildActor(connectionActor, ChannelOwner.props())
     //Make sure connection is established between client and the MQ
     Amqp.waitForConnection(system, producer).await()
-    system.actorOf(PublisherHandler.props(producer, Config.exchangeParams))
+    system.actorOf(PublisherActor.props(producer, Config.exchangeParams))
   }
 
 
