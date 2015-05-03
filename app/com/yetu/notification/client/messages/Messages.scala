@@ -20,3 +20,5 @@ case class MsgError(error: String) extends Msg
  * Acknowledge message when processing is completed (for now not used)
  */
 case class MsgProcessed() extends Msg
+
+case class UnknownMsg(m: Any) extends Msg
