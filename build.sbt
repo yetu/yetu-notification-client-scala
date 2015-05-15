@@ -19,8 +19,8 @@ scalaVersion := "2.11.1"
 
 libraryDependencies ++= Seq(
   ws,
-  "com.yetu"          %% "oauth2-resource-server" % "0.2.10",
-  "com.yetu"          %% "oauth2-resource-server" % "0.2.10" % "test" classifier "tests",
+  "com.yetu"          %% "oauth2-resource-server" % "0.2.11",
+  "com.yetu"          %% "oauth2-resource-server" % "0.2.11" % "test" classifier "tests",
   "net.logstash.logback" % "logstash-logback-encoder" % "3.0",
   "org.scalatest"     %% "scalatest" % "2.2.4" % "test",
   "org.scalamock"     %% "scalamock-scalatest-support" % "3.2" % "test",
