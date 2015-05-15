@@ -29,7 +29,6 @@ object NotificationManager {
     Amqp.waitForConnection(Akka.system, producer).await()
     Logger.debug("Initialized producer connection ...")
     Akka.system.actorOf(PublisherActor.props(producer, Config.exchangeParams))
-    Logger.info("Initialized publisherActor")
   }
 
 
