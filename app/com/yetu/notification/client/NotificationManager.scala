@@ -17,8 +17,10 @@ object NotificationManager {
   Logger.info("Init NotificationManager stuff ..")
   implicit val timeout = Timeout(30 seconds) // timeout for ask pattern
 
+  val system = new ActorSystem("notificationSystem");
+
   //Create the connection to MQ
-  val connectionActor = Akka.system.actorOf(
+  val connectionActor = system.actorOf(
     ConnectionOwner.props(Config.rabbitMQConnectionSettings(), 1 second)
   )
 
@@ -26,16 +28,16 @@ object NotificationManager {
     //Create channel for producer
     val producer = ConnectionOwner.createChildActor(connectionActor, ChannelOwner.props())
     //Make sure connection is established between client and the MQ
-    Amqp.waitForConnection(Akka.system, producer).await()
+    Amqp.waitForConnection(system, producer).await()
     Logger.debug("Initialized producer connection ...")
-    Akka.system.actorOf(PublisherActor.props(producer, Config.exchangeParams))
+    system.actorOf(PublisherActor.props(producer, Config.exchangeParams))
   }
 
 
   def init() = Logger.info("Init vals initialization")
 
   def bindConsumer(topic: String, listenerActor: ActorRef) = {
-    val consumerListener = Akka.system.actorOf(ConsumerActor.props(listenerActor))
+    val consumerListener = system.actorOf(ConsumerActor.props(listenerActor))
 
     //Assign ConsumerListener to the consumer channel
     val consumer: ActorRef = ConnectionOwner.createChildActor(
@@ -48,7 +50,7 @@ object NotificationManager {
     )
     Logger.info(s"Initialized consumer $consumer")
     //Make sure connection is established between client and the MQ
-    Amqp.waitForConnection(Akka.system, consumer).await()
+    Amqp.waitForConnection(system, consumer).await()
     Logger.info(s"Connected to consumer $consumer")
 
     consumer ! AddQueue(Config.queueParams)
