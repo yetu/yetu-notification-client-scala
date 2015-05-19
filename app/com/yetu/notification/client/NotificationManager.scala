@@ -1,14 +1,13 @@
 package com.yetu.notification.client
 
+import akka.actor.ActorSystem
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.github.sstone.amqp.Amqp._
 import com.github.sstone.amqp.{Amqp, ChannelOwner, ConnectionOwner, Consumer}
 import com.yetu.notification.client.actor.{PublisherActor, ConsumerActor}
-import play.api.libs.concurrent.Akka
 import play.api.Logger
-import play.api.Play.current
 
 import scala.concurrent.duration._
 
@@ -17,7 +16,7 @@ object NotificationManager {
   Logger.info("Init NotificationManager stuff ..")
   implicit val timeout = Timeout(30 seconds) // timeout for ask pattern
 
-  val system = new ActorSystem("notificationSystem");
+  val system = ActorSystem("notificationSystem")
 
   //Create the connection to MQ
   val connectionActor = system.actorOf(
