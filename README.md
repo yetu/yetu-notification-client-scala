@@ -1,6 +1,15 @@
 # yetu-notification-client-scala
 Scala client for yetu notifications
 
+After making changes, push all commits, then release to bintray with:
+
+```
+# make sure to use java 7, not java 8 for publishing, for the time being.
+export JAVA_HOME=`/usr/libexec/java_home -v 1.7`
+java -version # this must give you java 7 now, otherwise please install it
+sbt "cross release with-defaults"
+```
+
 ## Set up a vagrant box with rabbitmq
 
 You need to have installed locally:
